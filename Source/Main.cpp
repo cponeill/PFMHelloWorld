@@ -16,6 +16,7 @@ struct Person
 {
     int age = 0;
     int height = 0;
+    float hairLength{0.f};
     float GPA{0.f};
     float SATScore{0.f};
     int distanceTraveled = 0;
@@ -138,7 +139,7 @@ void addressOfFunction()
     p1 = &b;
     p1 = &c;
     
-    Person* personPtr;
+    Person* personPtr; // whoops, didn't initialize
     *personPtr;
     
 }
@@ -162,6 +163,72 @@ void copyWithPtr()
 }
 
 
+void referenceFunction()
+{
+    Person a;
+    Person& referenceToA = a;
+}
+
+void growOlder(Person& person)
+{
+    person.age += 1;
+    person.height += 1;
+    person.hairLength += 1.0;
+    
+}
+
+void func()
+{
+    Person p;
+    growOlder(p);
+}
+
+
+
+void gotcha(Person* & p)
+{
+    auto person = std::make_unique<Person>();
+    p = person.get();
+}
+
+Person& getReferenceToAPerson()
+{
+    auto person = make_unique<Person>();
+    return *person;
+}
+
+void danglingReference()
+{
+    Person& ref = getReferenceToAPerson();
+    DBG(ref.age);
+}
+
+void func(const String& str) {}
+
+void test()
+{
+    {
+        const String __unnamed__{"Hello World"};
+        func(__unnamed__);
+    }
+    func("Hello World");
+}
+
+
+void constFunc(const String& str)
+{
+    DBG(str);
+}
+
+void callingAConstFunc()
+{
+    String str {"Hello World"};
+    constFunc(str);
+    str += "hello";
+    constFunc(str);
+}
+
+
 //==============================================================================
 class HelloWorldApplication  : public JUCEApplication
 {
@@ -178,7 +245,9 @@ public:
     {
         //familyFunction();
         //doStuff();
-        addressOfFunction();
+        //addressOfFunction();
+        //danglingReference();
+        callingAConstFunc();
         mainWindow.reset (new MainWindow (getApplicationName()));
     }
 
